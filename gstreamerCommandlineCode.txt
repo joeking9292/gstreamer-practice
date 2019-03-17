@@ -1,0 +1,13 @@
+http://www.einarsundgren.se/gstreamer-basic-real-time-streaming-tutorial/
+
+
+Examples of code I'm running on the TX2: For mjpeg
+
+Sending the Stream:
+gst-launch-1.0 -v v4l2src device=/dev/video0 ! videoconvert ! videoscale ! video/x-raw,framerate=30/1, width=320,height=240 ! jpegenc ! rtpjpegpay ! udpsink host=10.214.152.133 port=5000
+
+Recieving the Stream:
+gst-launch-1.0 udpsrc port=5000 caps = "application/x-rtp\,\ media\=\(string\)video\,\ clock-rate\=\(int\)90000\,\ encoding-name\=\(string\)JPEG\,\ a-framerate\=\(string\)30.000000\,\ payload\=\(int\)26\,\ ssrc\=\(uint\)2184025809\,\ timestamp-offset\=\(uint\)527172616\,\ seqnum-offset\=\(uint\)1816"
+
+Complete commands for receiving:
+gst-launch-1.0 udpsrc port=5000 ! application/x-rtp,encoding-name=JPEG,payload=26 ! rtpjpegdepay ! jpegdec ! autovideosink
